@@ -19,7 +19,7 @@ import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.apache.oltu.oauth2.jwt.JWT;
 import org.apache.oltu.oauth2.jwt.io.JWTReader;
 
-import au.org.massive.strudel_web.cache.OauthToken;
+import au.org.massive.strudel_web.storage.TokenCache;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -160,7 +160,7 @@ public class OAuthService {
         logger.info(session.getUserID(provider));
         if(settings.isDefaultOidcProvider(provider)) {
         	session.setUserEmail(email);
-            Map<String, OauthToken> storedTokens = Settings.getInstance().getTokenCache().getUserTokens(email);
+            Map<String, OAuthToken> storedTokens = TokenCache.getInstance().getUserTokens(email);
             for(String storedProvider: storedTokens.keySet()) {
             	session.setAccessToken(storedProvider, 
             			storedTokens.get(storedProvider).getAccessToken());
@@ -173,8 +173,8 @@ public class OAuthService {
             }
         }
         else {
-        	OauthToken _token = new OauthToken(accessToken, refreshToken, expiresIn, uid);
-        	Settings.getInstance().getTokenCache().addToken(session.getUserEmail(), provider, _token);
+        	OAuthToken _token = new OAuthToken(accessToken, refreshToken, expiresIn, uid);
+        	TokenCache.getInstance().addToken(session.getUserEmail(), provider, _token);
         }
     }
     
@@ -212,8 +212,8 @@ public class OAuthService {
         logger.info("access token:" + accessToken);
         logger.info("refresh token:" + refreshToken);
         if(!settings.isDefaultOidcProvider(provider)) {
-        	OauthToken _token = new OauthToken(accessToken, refreshToken, expiresIn, uid);
-        	Settings.getInstance().getTokenCache().addToken(session.getUserEmail(), provider, _token);
+        	OAuthToken _token = new OAuthToken(accessToken, refreshToken, expiresIn, uid);
+        	TokenCache.getInstance().addToken(session.getUserEmail(), provider, _token);
         }
         
     }

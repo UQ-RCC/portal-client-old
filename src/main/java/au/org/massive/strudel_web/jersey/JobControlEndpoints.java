@@ -1,15 +1,16 @@
 package au.org.massive.strudel_web.jersey;
 import au.org.massive.strudel_web.*;
+import au.org.massive.strudel_web.storage.TokenCache;
+import au.org.massive.strudel_web.storage.UserPreferenceCache;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
-import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
+import org.bson.Document;
 import org.json.JSONObject;
 //import org.keycloak.common.util.Base64Url;
 //import org.keycloak.common.util.KeycloakUriBuilder;
 
-
+import com.google.gson.Gson;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Endpoints that act on an HPC system
  *
  * @author jrigby
  * @modified hoangnguyen177
@@ -102,7 +102,7 @@ public class JobControlEndpoints extends Endpoint {
 				// remove this token
 				session.clearToken(authServiceId);
 				// remove from the cache
-				Settings.getInstance().getTokenCache().removeToken(session.getUserEmail(), authServiceId);
+				TokenCache.getInstance().removeToken(session.getUserEmail(), authServiceId);
 				return (new JSONObject(response)).toString();
 			} 
         }
@@ -151,4 +151,41 @@ public class JobControlEndpoints extends Endpoint {
     	return (new JSONObject(responseMessage)).toString();
     }
     
+    /************************preference**********************************/
+    private String getUserEmail(HttpServletRequest request){
+    	String sessionId = request.getSession(true).getId();
+        Session session;
+        try {
+            session = new Session(sessionId);
+        } catch (NoSuchSessionException e1) {
+            // If the server restarts and a client has a stale session, a new one is created
+            request.getSession().invalidate();
+            return getSessionInfo(request);
+        }
+        return session.getUserEmail();
+    }
+    
+    @GET
+    @Path("preference")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getPreference(@Context HttpServletRequest request) {
+        String email = this.getUserEmail(request);
+        Document preference= UserPreferenceCache.getInstance().getPreference(email);        
+        return preference.toJson();
+    }
+    
+    @PUT
+    @Path("preference")
+    @Consumes({MediaType.APPLICATION_JSON})
+    public void addPreference(@Context HttpServletRequest request, 
+    							String pref) {
+    	Gson gson = new Gson();
+        Map<String, Object> prefMap = new HashMap<String, Object>();
+        prefMap = (Map<String, Object>)gson.fromJson(pref, prefMap.getClass());
+        String email = this.getUserEmail(request);
+    	UserPreferenceCache.getInstance().addUpdatePreference(email, prefMap); 
+    }
+    
+    
+   
 }

@@ -4,7 +4,8 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
-import au.org.massive.strudel_web.cache.TokenCache;
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoDatabase;
 
 import javax.net.ssl.*;
 
@@ -18,7 +19,6 @@ import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 /**
  * Provides settings for the application. Requires "nimportal.properties" to be in the class path.
  * Settings objects are singletons, and configuration is loaded only once.
@@ -32,10 +32,9 @@ public class Settings {
     private String cacheFileLocation;
     private String configurationName; 
     private Configuration config;
-    private TokenCache tokenCache = null;
     private List<String> providers = null;
-    
-    private Settings() throws MalformedURLException {
+    private MongoDatabase database = null;
+    private Settings(){
         try {
             config = new PropertiesConfiguration("coesra.properties");
         } catch (ConfigurationException e) {
@@ -73,11 +72,12 @@ public class Settings {
                         return true;
                     }
                 };
-
                 HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
             } catch (KeyManagementException | NoSuchAlgorithmException e) {
                 e.printStackTrace();
             }
+            MongoClient client = new MongoClient("localhost", 27017);
+    		database = client.getDatabase("settings-db");
         }
 
         // get the oidc configs
@@ -100,18 +100,14 @@ public class Settings {
         		oidConfig.put("default", aConfig);
         	}
         }
-        cacheFileLocation = config.getString("cache-location","/opt/coesra/coesra.cache");
         configurationName = config.getString("configuration-name", "CoESRA");
-        if(tokenCache == null) {
-        	tokenCache = new TokenCache(cacheFileLocation);
-        }
     }
 
     public static Settings getInstance(){
         if (instance == null) {
             try {
 				instance = new Settings();
-			} catch (MalformedURLException e) {
+			} catch (Exception e) {
 				return null;
 			}
         }
@@ -146,12 +142,7 @@ public class Settings {
     	return null;
     }
     
-    public String getCacheFileLocation() {
-    	return cacheFileLocation;
+    public MongoDatabase getStorage() {
+    	return database;
     }
-    
-    public TokenCache getTokenCache() {
-    	return this.tokenCache;
-    }
-    
 }

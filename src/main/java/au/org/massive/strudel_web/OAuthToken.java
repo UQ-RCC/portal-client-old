@@ -1,10 +1,12 @@
-package au.org.massive.strudel_web.cache;
+package au.org.massive.strudel_web;
 
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 
-public class OauthToken implements Serializable {
+public class OAuthToken implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private String accessToken = "";
@@ -13,7 +15,7 @@ public class OauthToken implements Serializable {
 	private Instant lastSetAccessTokenExpiry;
 	private String uid = "";
 	
-	public OauthToken(String aToken, String rToken, Long accessTokenExpiry, String uid) {
+	public OAuthToken(String aToken, String rToken, Long accessTokenExpiry, String uid) {
 		this.accessToken = aToken;
 		this.refreshToken = rToken;
 		this.accessTokenExpiry = accessTokenExpiry;
@@ -58,6 +60,16 @@ public class OauthToken implements Serializable {
 	
 	public void setUid(String uid) {
 		this.uid = uid;
+	}
+	
+	public Map<String, Object> getMap() {
+		Map<String, Object> values = new HashMap<String, Object>();
+		values.put("accessToken", accessToken);
+		values.put("refreshToken", refreshToken);
+		values.put("accessTokenExpiry", accessTokenExpiry);
+		values.put("lastSetAccessTokenExpiry", lastSetAccessTokenExpiry);
+		values.put("uid", uid);
+		return values;
 	}
 	
 }
