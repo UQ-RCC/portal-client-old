@@ -6,7 +6,7 @@ install: true
 deploy:
   provider: releases
   api_key:
-    secure: $GITHUB_TOKEN
+    secure: "LG2Xd3Voohfqasd8NhzOcT6qdErtHO+xAj3E0oXoaK12NZ3ofj7fU2BaM4Lur/y7Qpqwg3YUK+FHREv1GDaiCXo9f7XzP2yDIzKGlosyFURJl7Ny40I2Z1H33ZuHUM5sTGpcgQw4NbQsF09AQZ298BxOmgzrz5EY37emqSIbIlLoNfyZFLAp+mCi1ADwGketnCXxgE5oF8KSo8Spzva5UeCxaVKagXgyB/vsf07b/3clM76GAQFsl1iVc6Gilc3ZPw4wL9eD+BV35lbujuiofcgDDB+65eQtRlAnMBFUoQHnF2GAu7aL7EjS4b1kwPUA9E6lIBIk5wIn/IyG2KYmrjiaO4X6RNtrZU3re4VLm5I7o0YhLfy8h+trCUdoWJAFyMTtSzCZy1/ekMZc3kap84fNeA4K/PkgLrynsfBQ7HJc+KrutwipM3lQ3js0bgg+jRmuhmCOHTiVKedNRp4aitgEncTz5Bg+4q+vzPsZoBX7SVyfgAw8sbPmiSQWrMqUNdLqwJLAxal5B5CmLsp9zn+QbqrfyIcmHRtIqptKjARwjH/lAHI8NlzSuKVesfaea87OkB5uzWsO5izsSH3vdGzRQ8DK3ZeYP2YOuJa3sEw7Fk2ZFtHKihjggEjjOK/elH/QaM1zak9fD8yNXgp2CsJa1JvNYy2DC0E3cbZnIDA="
   skip_cleanup: true
   file_glob: true
   file: target/client.war
