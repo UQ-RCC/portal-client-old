@@ -1,0 +1,15 @@
+language: java
+jdk:
+- openjdk11
+script: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+install: true
+deploy:
+  provider: releases
+  api_key:
+    secure: $GITHUB_TOKEN
+  skip_cleanup: true
+  file_glob: true
+  file: target/client.war
+  draft: true
+  on:
+    tags: true
