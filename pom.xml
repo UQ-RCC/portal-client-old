@@ -4,7 +4,7 @@
     <groupId>au.org.uq</groupId>
     <artifactId>client</artifactId>
     <packaging>war</packaging>
-    <version>latest</version>
+    <version>${release.version}</version>
 	<name>Web service client</name>
 
 	<repositories>
@@ -24,7 +24,6 @@
 	</properties>
 
     <build>
-        <finalName>client</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
