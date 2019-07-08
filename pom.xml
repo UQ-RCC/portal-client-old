@@ -4,7 +4,7 @@
     <groupId>au.org.uq</groupId>
     <artifactId>client</artifactId>
     <packaging>war</packaging>
-    <version>0.0.1</version>
+    <version>latest</version>
 	<name>Web service client</name>
 
 	<repositories>
