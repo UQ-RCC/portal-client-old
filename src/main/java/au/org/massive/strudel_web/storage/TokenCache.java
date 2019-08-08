@@ -8,6 +8,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.UpdateResult;
 
 import au.org.massive.strudel_web.OAuthToken;
@@ -47,10 +48,11 @@ public class TokenCache{
 		Document tokenDoc = new Document(token.getMap());
 		tokenDoc.put("email", useremail);
 		tokenDoc.put("provider", provider);
-		UpdateResult updateResult = tokenStorage.updateOne(
+		UpdateResult updateResult = tokenStorage.replaceOne(
 				Filters.and(Filters.eq("email", useremail), 
 							Filters.eq("provider", provider)),
-				tokenDoc);
+				tokenDoc, (new UpdateOptions()).upsert(true)
+				);
 		if(updateResult.getModifiedCount() == 0 ) {
 			tokenStorage.insertOne(tokenDoc);
 		}
