@@ -152,17 +152,13 @@ public class JobControlEndpoints extends Endpoint {
     }
     
     /************************preference**********************************/
-    private String getUserEmail(HttpServletRequest request){
-    	String sessionId = request.getSession(true).getId();
-        Session session;
-        try {
-            session = new Session(sessionId);
-        } catch (NoSuchSessionException e1) {
-            // If the server restarts and a client has a stale session, a new one is created
-            request.getSession().invalidate();
-            return getSessionInfo(request);
+    private String getUsername(HttpServletRequest request, String service){
+    	if (service ==null || service.isEmpty()) {
+            service = Settings.getInstance().getDefaultProvider();
         }
-        return session.getUserEmail();
+    	Map<String, String> response = new HashMap<>();
+        Session session = this.getSession(request);
+        return session.getUsername(service);
     }
     
     @GET
@@ -170,8 +166,8 @@ public class JobControlEndpoints extends Endpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public String getPreference(@Context HttpServletRequest request,
     		@PathParam("service") String service) {
-        String email = this.getUserEmail(request);
-        Document preference= UserPreferenceCache.getInstance().getPreference(service, email);        
+    	String uname = this.getUsername(request, service);
+        Document preference= UserPreferenceCache.getInstance().getPreference(service, uname);        
         return preference.toJson();
     }
     
@@ -183,8 +179,8 @@ public class JobControlEndpoints extends Endpoint {
     	Gson gson = new Gson();
         Map<String, Object> prefMap = new HashMap<String, Object>();
         prefMap = (Map<String, Object>)gson.fromJson(pref, prefMap.getClass());
-        String email = this.getUserEmail(request);
-    	UserPreferenceCache.getInstance().addUpdatePreference(service, email, prefMap); 
+        String uname = this.getUsername(request, service);
+        UserPreferenceCache.getInstance().addUpdatePreference(service, uname, prefMap); 
     }
     
     

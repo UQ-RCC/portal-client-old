@@ -25,34 +25,37 @@ public class UserPreferenceCache {
     }
 	
 	
-	public Document getPreference(String service, String email) {
+	public Document getPreference(String service, String uname) {
 		MongoCollection<Document> storage = 
 				Settings.getInstance().getStorage().getCollection(service+"_preference");
-		FindIterable<Document> findIterable = storage.find(Filters.eq("email", email));
+		FindIterable<Document> findIterable = storage.find(Filters.eq("username", uname));
 		// the very first one
 		Document prefDocument = findIterable.first();
 		if(prefDocument == null) {
 			prefDocument = new Document(new HashMap<String,Object>());
-			prefDocument.put("email", email);
+			prefDocument.put("username", uname);
 			storage.insertOne(prefDocument);
 		}
 		return prefDocument;
 	}
 	
-	public void addUpdatePreference(String service, String email, Map<String, Object> preference) {
+	public void addUpdatePreference(String service, String uname, Map<String, Object> preference) {
+		if(uname == null || uname.isEmpty())
+			return;
 		MongoCollection<Document> storage = 
 				Settings.getInstance().getStorage().getCollection(service+"_preference");
-		FindIterable<Document> findIterable = storage.find(Filters.eq("email", email));
+		FindIterable<Document> findIterable = storage.find(Filters.eq("username", uname));
 		Document prefDoc = findIterable.first();
 		if(prefDoc == null) {
 			// should not happen
 			prefDoc = new Document(new HashMap<String,Object>());
+			prefDoc.put("username", uname);
 			storage.insertOne(prefDoc);
 		}
 		for(String key: preference.keySet()) {
 			prefDoc.put(key, preference.get(key));
 		}
 		//apparent if it has _id, it will complain
-		storage.replaceOne(Filters.eq("email", email), prefDoc);
+		storage.replaceOne(Filters.eq("username", uname), prefDoc);
 	}
 }
