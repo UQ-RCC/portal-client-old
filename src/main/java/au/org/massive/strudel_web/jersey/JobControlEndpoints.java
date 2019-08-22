@@ -166,24 +166,25 @@ public class JobControlEndpoints extends Endpoint {
     }
     
     @GET
-    @Path("preference")
+    @Path("preference/{service}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getPreference(@Context HttpServletRequest request) {
+    public String getPreference(@Context HttpServletRequest request,
+    		@PathParam("service") String service) {
         String email = this.getUserEmail(request);
-        Document preference= UserPreferenceCache.getInstance().getPreference(email);        
+        Document preference= UserPreferenceCache.getInstance().getPreference(service, email);        
         return preference.toJson();
     }
     
     @PUT
-    @Path("preference")
+    @Path("preference/{service}")
     @Consumes({MediaType.APPLICATION_JSON})
-    public void addPreference(@Context HttpServletRequest request, 
-    							String pref) {
+    public void addPreference(@Context HttpServletRequest request,
+    		@PathParam("service") String service, String pref) {
     	Gson gson = new Gson();
         Map<String, Object> prefMap = new HashMap<String, Object>();
         prefMap = (Map<String, Object>)gson.fromJson(pref, prefMap.getClass());
         String email = this.getUserEmail(request);
-    	UserPreferenceCache.getInstance().addUpdatePreference(email, prefMap); 
+    	UserPreferenceCache.getInstance().addUpdatePreference(service, email, prefMap); 
     }
     
     

@@ -25,8 +25,9 @@ public class UserPreferenceCache {
     }
 	
 	
-	public Document getPreference(String email) {
-		MongoCollection<Document> storage = Settings.getInstance().getStorage().getCollection("preference");
+	public Document getPreference(String service, String email) {
+		MongoCollection<Document> storage = 
+				Settings.getInstance().getStorage().getCollection(service+"_preference");
 		FindIterable<Document> findIterable = storage.find(Filters.eq("email", email));
 		// the very first one
 		Document prefDocument = findIterable.first();
@@ -38,8 +39,9 @@ public class UserPreferenceCache {
 		return prefDocument;
 	}
 	
-	public void addUpdatePreference(String email, Map<String, Object> preference) {
-		MongoCollection<Document> storage = Settings.getInstance().getStorage().getCollection("preference");
+	public void addUpdatePreference(String service, String email, Map<String, Object> preference) {
+		MongoCollection<Document> storage = 
+				Settings.getInstance().getStorage().getCollection(service+"_preference");
 		FindIterable<Document> findIterable = storage.find(Filters.eq("email", email));
 		Document prefDoc = findIterable.first();
 		if(prefDoc == null) {

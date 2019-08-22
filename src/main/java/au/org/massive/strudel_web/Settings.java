@@ -9,7 +9,6 @@ import com.mongodb.client.MongoDatabase;
 
 import javax.net.ssl.*;
 
-import java.net.MalformedURLException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -29,7 +28,6 @@ public class Settings {
 
     private Map<String, Map<String, String>> oidConfig;
     private static Settings instance;
-    private String cacheFileLocation;
     private String configurationName; 
     private Configuration config;
     private List<String> providers = null;
