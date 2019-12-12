@@ -1,0 +1,62 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.ajoberstar:grgit:1.1.0'
+    }
+}
+
+plugins {
+    id 'java'
+    id 'application'
+    id 'distribution'
+    id 'fr.brouillard.oss.gradle.jgitver' version '0.8.0'
+}
+
+jgitver {
+    useDistance true
+    useGitCommitID true
+    useDirty true
+    autoIncrementPatch false
+}
+
+repositories {
+    mavenCentral()
+}
+
+mainClassName = 'au.org.massive.strudel_web.PortalClient'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+dependencies {
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-1.2-api', version: '2.12.1'
+
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat', version: '2.2.1.RELEASE'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.2.1.RELEASE'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jersey', version: '2.2.1.RELEASE'
+
+    implementation group: 'commons-configuration', name: 'commons-configuration', version: '1.10'
+    implementation group: 'org.mongodb', name: 'mongo-java-driver', version: '3.3.0'
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.1'
+    implementation group: 'org.json', name: 'json', version: '20131018'
+    implementation group: 'org.apache.oltu.oauth2', name: 'org.apache.oltu.oauth2.client', version: '1.0.0'
+    implementation group: 'org.apache.oltu.oauth2', name: 'org.apache.oltu.oauth2.jwt', version: '1.0.0'
+
+    testImplementation 'junit:junit:4.12'
+
+}
+
+distributions {
+    main {
+        distZip.enabled false
+    }
+}
+
+distTar {
+    compression Compression.GZIP
+    extension 'tar.gz' /* Not .tgz */
+}

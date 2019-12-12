@@ -9,6 +9,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,21 +21,13 @@ import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
  * The login controller kicks off the OAuth2 auth flow and notifies the client when auth is complete.
  * The view for the login controller is displayed in a popup window.
  */
-public class LoginController extends HttpServlet {
+@Path("/login")
+public class LoginController {
     private static final long serialVersionUID = 1L;
     private final static Logger logger = LogManager.getLogger(LoginController.class);
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public LoginController() {
-        super();
-    }
 
-    /**
-     * @throws IOException thrown on network IO errors
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-     */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @GET
+    public void doGet(@Context HttpServletRequest request, @Context HttpServletResponse response) throws IOException {
         Session session = new Session(request);
         String authServiceId;
         if ((authServiceId = request.getParameter("service")) == null) {
